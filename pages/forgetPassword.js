@@ -1,15 +1,17 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { Alert } from 'react-bootstrap'
 import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useAuth } from '../context/AuthContext'
 
-const Login = () => {
-  const router = useRouter()
-  const { user, login } = useAuth()
+
+const forgetPassword = () => {
+   const [message, setMessage] = useState()
+  const { user, resetPassword } = useAuth()
+  const [error, setError] = useState("")
   const [data, setData] = useState({
     email: '',
-    password: '',
+   
   })
 
   const handleLogin = async (e) => {
@@ -17,10 +19,12 @@ const Login = () => {
 
     console.log(user)
     try {
-      await login(data.email, data.password)
-      router.push('/dashboard')
+        setMessage('')
+      await resetPassword(data.email)
+      setMessage ('Check your inbox further instractions')
+   
     } catch (err) {
-      console.log(err)
+      setError("Failed to rest password")
     }
   }
 
@@ -31,7 +35,9 @@ const Login = () => {
         margin: 'auto',
       }}
     >
-      <h1 className="text-center my-3 ">Login</h1>
+      <h1 className="text-center my-3 ">Password Reset</h1>
+      {error && <Alert variant="danger">{error}</Alert>}
+      {message && <Alert variant="success">{message}</Alert>}
       <Form onSubmit={handleLogin}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
@@ -48,34 +54,18 @@ const Login = () => {
             placeholder="Enter email"
           />
         </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            onChange={(e) =>
-              setData({
-                ...data,
-                password: e.target.value,
-              })
-            }
-            value={data.password}
-            required
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Group>
         <Button variant="primary" type="submit">
-          Login
+          Reset Password
         </Button>
       </Form>
       <div className='w-100 text-center mt-3'>
-        <Link href="/forgetPassword">Forget Password?</Link>
+        <Link href='/login'>Login</Link>
       </div>
       <div className='w-100 text-center mt-3'>
-        <Link href="/signup">need to sign up?</Link>
+        need and account? <Link href='/signup'>Sign Up</Link>
       </div>
     </div>
   )
 }
 
-export default Login
+export default forgetPassword

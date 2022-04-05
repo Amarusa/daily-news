@@ -1,27 +1,27 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useAuth } from '../context/AuthContext'
+import Link from 'next/link'
 
-const Login = () => {
-  const router = useRouter()
-  const { user, login } = useAuth()
+const UpdateProfile = () => {
+  const { user, updateEmail, updatePassword} = useAuth()
+  console.log(user)
   const [data, setData] = useState({
     email: '',
     password: '',
   })
 
-  const handleLogin = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault()
-
-    console.log(user)
+  
+    const promises = []
     try {
-      await login(data.email, data.password)
-      router.push('/dashboard')
+      await signup(data.email, data.password)
     } catch (err) {
       console.log(err)
     }
+
+    console.log(data)
   }
 
   return (
@@ -31,11 +31,14 @@ const Login = () => {
         margin: 'auto',
       }}
     >
-      <h1 className="text-center my-3 ">Login</h1>
-      <Form onSubmit={handleLogin}>
+      <h1 className="text-center my-3 ">Update Profile</h1>
+      <Form onSubmit={handleSignup}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
+            type="email"
+            placeholder="Enter email"
+            required defaultValue={user.email}
             onChange={(e) =>
               setData({
                 ...data,
@@ -43,15 +46,15 @@ const Login = () => {
               })
             }
             value={data.email}
-            required
-            type="email"
-            placeholder="Enter email"
           />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
+            type="password"
+            placeholder="Leave blank to keep the same"
+            required
             onChange={(e) =>
               setData({
                 ...data,
@@ -59,23 +62,18 @@ const Login = () => {
               })
             }
             value={data.password}
-            required
-            type="password"
-            placeholder="Password"
           />
         </Form.Group>
+
         <Button variant="primary" type="submit">
-          Login
+         Update
         </Button>
       </Form>
-      <div className='w-100 text-center mt-3'>
-        <Link href="/forgetPassword">Forget Password?</Link>
-      </div>
-      <div className='w-100 text-center mt-3'>
-        <Link href="/signup">need to sign up?</Link>
+      <div className="w-100 text-center mt-2">
+          <Link href="/">Cancel</Link>
       </div>
     </div>
   )
 }
 
-export default Login
+export default UpdateProfile
